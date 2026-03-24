@@ -1,0 +1,89 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/navbar') %>
+
+        <div class="container mt-4">
+            <%- include('partials/alerts') %>
+
+                <h2 class="text-center mb-4">Our Tours</h2>
+
+                <!-- Search and Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="GET" action="/tours" class="row g-3">
+                            <div class="col-md-4">
+                                <input type="text" name="search" class="form-control"
+                                    placeholder="Search by destination..." value="<%= searchQuery %>">
+                            </div>
+                            <div class="col-md-3">
+                                <select name="category" class="form-select">
+                                    <option value="">All Categories</option>
+                                    <option value="Europe" <%=category==='Europe' ? 'selected' : '' %>>Europe</option>
+                                    <option value="Asia" <%=category==='Asia' ? 'selected' : '' %>>Asia</option>
+                                    <option value="North America" <%=category==='North America' ? 'selected' : '' %>
+                                        >North America</option>
+                                    <option value="Middle East" <%=category==='Middle East' ? 'selected' : '' %>>Middle
+                                        East</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="sort" class="form-select">
+                                    <option value="">Sort by</option>
+                                    <option value="price_asc" <%=sort==='price_asc' ? 'selected' : '' %>>Price: Low to
+                                        High</option>
+                                    <option value="price_desc" <%=sort==='price_desc' ? 'selected' : '' %>>Price: High
+                                        to Low</option>
+                                    <option value="duration" <%=sort==='duration' ? 'selected' : '' %>>Duration</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tours Grid -->
+                <div class="row">
+                    <% tours.forEach(tour=> { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="<%= tour.image_url %>" class="card-img-top" alt="<%= tour.name %>"
+                                    style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <%= tour.name %>
+                                    </h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <%= tour.destination %><br>
+                                            <i class="fas fa-calendar"></i>
+                                            <%= tour.duration %> days<br>
+                                                <i class="fas fa-users"></i> Max <%= tour.max_group_size %> people
+                                    </p>
+                                    <p class="card-text">
+                                        <strong class="text-primary h4">₹<%= tour.price %></strong> per person
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-info">
+                                            <%= tour.category %>
+                                        </span>
+                                        <span class="badge bg-success">
+                                            <%= tour.available_seats %> seats left
+                                        </span>
+                                    </div>
+                                    <a href="/tours/<%= tour.id %>" class="btn btn-primary mt-3 w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+
+                <% if (tours.length===0) { %>
+                    <div class="alert alert-info text-center">
+                        No tours found matching your criteria.
+                    </div>
+                    <% } %>
+        </div>
+
+        <%- include('partials/footer') %>

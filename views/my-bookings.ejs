@@ -1,0 +1,84 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/navbar') %>
+
+        <div class="container mt-4">
+            <%- include('partials/alerts') %>
+
+                <h2 class="mb-4">My Bookings</h2>
+
+                <% if (bookings.length> 0) { %>
+                    <div class="row">
+                        <% bookings.forEach(booking=> { %>
+                            <div class="col-md-6 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Booking Reference: <%= booking.booking_reference %>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <img src="<%= booking.image_url %>" class="img-fluid rounded"
+                                                    alt="<%= booking.tour_name %>">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h5>
+                                                    <%= booking.tour_name %>
+                                                </h5>
+                                                <p><i class="fas fa-map-marker-alt"></i>
+                                                    <%= booking.destination %>
+                                                </p>
+                                                <p><i class="fas fa-calendar"></i>
+                                                    <%= new Date(booking.start_date).toLocaleDateString() %> - <%= new
+                                                            Date(booking.end_date).toLocaleDateString() %>
+                                                </p>
+                                                <p><i class="fas fa-users"></i>
+                                                    <%= booking.number_of_people %> people
+                                                </p>
+                                                <p><strong>Total Price: ₹<%= booking.total_price %></strong></p>
+                                                <p>
+                                                    Status:
+                                                    <span
+                                                        class="badge <%= booking.status === 'confirmed' ? 'bg-success' : booking.status === 'cancelled' ? 'bg-danger' : 'bg-warning' %>">
+                                                        <%= booking.status.toUpperCase() %>
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    Payment:
+                                                    <span
+                                                        class="badge <%= booking.payment_status === 'paid' ? 'bg-success' : 'bg-warning' %>">
+                                                        <%= booking.payment_status.toUpperCase() %>
+                                                    </span>
+                                                </p>
+
+                                                <% if (booking.status==='pending' || booking.status==='confirmed' ) { %>
+                                                    <form action="/bookings/<%= booking.id %>?_method=DELETE"
+                                                        method="POST" style="display: inline;">
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                            Cancel Booking
+                                                        </button>
+                                                    </form>
+                                                    <% } %>
+
+                                                        <% if (booking.payment_status==='pending' && booking.status
+                                                            !=='cancelled' ) { %>
+                                                            <a href="/payments/<%= booking.id %>"
+                                                                class="btn btn-success btn-sm">Make Payment</a>
+                                                            <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <div class="alert alert-info">
+                            You haven't made any bookings yet. <a href="/tours">Browse our tours</a> to get started!
+                        </div>
+                        <% } %>
+        </div>
+
+        <%- include('partials/footer') %>

@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/navbar') %>
+
+        <div class="container mt-4">
+            <%- include('partials/alerts') %>
+
+                <!-- Hero Section -->
+                <div class="bg-light p-5 rounded-lg mb-4 text-center">
+                    <h1 class="display-4">Explore the World with TravelEase</h1>
+                    <p class="lead">Discover amazing destinations and create unforgettable memories</p>
+                    <a href="/tours" class="btn btn-primary btn-lg">Browse Tours</a>
+                </div>
+
+                <!-- Featured Tours -->
+                <h2 class="text-center mb-4">Featured Tours</h2>
+                <div class="row">
+                    <% featuredTours.forEach(tour=> { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="<%= tour.image_url %>" class="card-img-top" alt="<%= tour.name %>"
+                                    style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <%= tour.name %>
+                                    </h5>
+                                    <p class="card-text"><i class="fas fa-map-marker-alt"></i>
+                                        <%= tour.destination %>
+                                    </p>
+                                    <p class="card-text"><i class="fas fa-calendar"></i>
+                                        <%= tour.duration %> days
+                                    </p>
+                                    <p class="card-text"><strong class="text-primary">₹<%= tour.price %></strong> per
+                                        person</p>
+                                    <a href="/tours/<%= tour.id %>" class="btn btn-outline-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+
+                <!-- Features Section -->
+                <div class="row text-center mt-5">
+                    <div class="col-md-4">
+                        <i class="fas fa-globe fa-3x text-primary mb-3"></i>
+                        <h3>Worldwide Destinations</h3>
+                        <p>Handpicked destinations across the globe</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-tag fa-3x text-primary mb-3"></i>
+                        <h3>Best Prices</h3>
+                        <p>Competitive rates and special offers</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                        <h3>24/7 Support</h3>
+                        <p>Dedicated customer service</p>
+                    </div>
+                </div>
+        </div>
+
+        <%- include('partials/footer') %>

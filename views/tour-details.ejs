@@ -1,0 +1,159 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/navbar') %>
+
+        <div class="container mt-4">
+            <%- include('partials/alerts') %>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <img src="<%= tour.image_url %>" class="img-fluid rounded mb-4" alt="<%= tour.name %>">
+                        <h2>
+                            <%= tour.name %>
+                        </h2>
+                        <p class="lead"><i class="fas fa-map-marker-alt"></i>
+                            <%= tour.destination %>
+                        </p>
+
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-clock fa-2x text-primary"></i>
+                                        <h5>
+                                            <%= tour.duration %> Days
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-users fa-2x text-primary"></i>
+                                        <h5>Max <%= tour.max_group_size %>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-tag fa-2x text-primary"></i>
+                                        <h5>₹<%= tour.price %>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-calendar fa-2x text-primary"></i>
+                                        <h5>
+                                            <%= new Date(tour.start_date).toLocaleDateString() %>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>Description</h4>
+                        <p>
+                            <%= tour.description %>
+                        </p>
+
+                        <h4>Itinerary</h4>
+                        <p>
+                            <%= tour.itinerary || 'Detailed itinerary will be provided upon booking.' %>
+                        </p>
+
+                        <h4>Inclusions</h4>
+                        <ul>
+                            <% if (tour.inclusions) { %>
+                                <%= tour.inclusions.split(',').map(item=> `<li>${item}</li>`).join('') %>
+                                    <% } else { %>
+                                        <li>Accommodation</li>
+                                        <li>Daily breakfast</li>
+                                        <li>Professional guide</li>
+                                        <li>Transportation</li>
+                                        <% } %>
+                        </ul>
+
+                        <h4>Exclusions</h4>
+                        <ul>
+                            <% if (tour.exclusions) { %>
+                                <%= tour.exclusions.split(',').map(item=> `<li>${item}</li>`).join('') %>
+                                    <% } else { %>
+                                        <li>International flights</li>
+                                        <li>Travel insurance</li>
+                                        <li>Personal expenses</li>
+                                        <% } %>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card sticky-top" style="top: 20px;">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">Book This Tour</h4>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="text-primary">₹<%= tour.price %>
+                                </h3>
+                                <p>per person</p>
+
+                                <% if (tour.available_seats> 0) { %>
+                                    <form action="/bookings" method="POST">
+                                        <input type="hidden" name="_method" value="POST">
+                                        <input type="hidden" name="tour_id" value="<%= tour.id %>">
+
+                                        <div class="mb-3">
+                                            <label for="number_of_people" class="form-label">Number of People</label>
+                                            <input type="number" class="form-control" id="number_of_people"
+                                                name="number_of_people" min="1" max="<%= tour.available_seats %>"
+                                                required onchange="updateTotalPrice()">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="special_requests" class="form-label">Special Requests</label>
+                                            <textarea class="form-control" id="special_requests" name="special_requests"
+                                                rows="3"></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <h5>Total Price: ₹<span id="total_price">
+                                                    <%= tour.price %>
+                                                </span></h5>
+                                        </div>
+
+                                        <% if (session.user) { %>
+                                            <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                                            <% } else { %>
+                                                <a href="/auth/login" class="btn btn-primary w-100">Login to Book</a>
+                                                <% } %>
+                                    </form>
+
+                                    <p class="mt-3 text-success">
+                                        <i class="fas fa-check-circle"></i>
+                                        <%= tour.available_seats %> seats available
+                                    </p>
+                                    <% } else { %>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle"></i> Sorry, this tour is fully
+                                            booked!
+                                        </div>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <script>
+            function updateTotalPrice() {
+                const people = document.getElementById('number_of_people').value;
+                const price = <%= tour.price %>;
+                const total = people * price;
+                document.getElementById('total_price').textContent = total;
+            }
+        </script>
+
+        <%- include('partials/footer') %>
